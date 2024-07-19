@@ -1,18 +1,25 @@
 using Commands;
-using Core;
 using UnityEngine;
+using VContainer;
+using VContainer.Unity;
 using VitalRouter;
 
 namespace Presentation
 {
 	[Routes]
-	public partial class GameScreenPresenter : Presenter<GameScreenView, GameEngine>, IScreen
+	public partial class GameScreenPresenter : StatelessPresenter<GameScreenView>, IScreen
 	{
 		private IPresenterFactory _factory;
+		private IGameplayInstaller _installer;
+		private LifetimeScope _gameplayeScope;
 		
-		public GameScreenPresenter(IModuleViewProvider<GameScreenView> viewProvider, GameEngine model, IPresenterFactory factory) : base(viewProvider, model)
+		public GameScreenPresenter(
+			IModuleViewProvider<GameScreenView> viewProvider, 
+			IPresenterFactory factory,
+			IGameplayInstaller installer) : base(viewProvider)
 		{
 			_factory = factory;
+			_installer = installer;
 		}
 
 		protected override void InitializeView(GameScreenView view)
@@ -21,10 +28,23 @@ namespace Presentation
 		}
 
 		protected override void OnActivate()
-		{ }
+		{
+			// install gameplay dependencies
+			var parentScope = View.transform.GetComponentInParent<LifetimeScope>();
+			_gameplayeScope = parentScope.CreateChild(_installer);
+			_gameplayeScope.transform.SetParent(View.transform);
+			_gameplayeScope.name = "Gameplay DI Scope";
+
+			// subscribe presenter to get notifications from the router
+			var router = _gameplayeScope.Container.Resolve<Router>();
+			MapTo(router);
+		}
 
 		protected override void OnDeactivate()
-		{ }
+		{
+			// dispose gameplay dependencies scope
+			_gameplayeScope.Dispose();
+		}
 
 		public void On(PlayerTurnCommand cmd)
 		{
