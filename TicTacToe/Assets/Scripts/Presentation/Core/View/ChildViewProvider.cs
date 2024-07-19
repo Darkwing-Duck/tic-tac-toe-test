@@ -1,9 +1,9 @@
 using UnityEngine;
 
-namespace Presentation.Core
+namespace Presentation
 {
 	public class ChildViewProvider<TView> : IModuleViewProvider<TView>
-		where TView : ModuleView
+		where TView : PresentationView
 	{
 		private TView _view;
 

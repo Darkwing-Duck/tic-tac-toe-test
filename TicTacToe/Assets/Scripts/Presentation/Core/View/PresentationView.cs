@@ -1,9 +1,9 @@
 using System;
 using UnityEngine;
 
-namespace Presentation.Core
+namespace Presentation
 {
-	public class ModuleView : MonoBehaviour
+	public class PresentationView : MonoBehaviour
 	{
 		public event Action OnDestroyed;
 		

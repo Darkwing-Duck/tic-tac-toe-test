@@ -1,15 +1,22 @@
 using UnityEngine;
 
-namespace Presentation.Core
+namespace Presentation
 {
+
+	public interface IPresenter
+	{
+		void Show();
+		void ShowUnder(Transform parent);
+		void Hide();
+	}
 	
 	/// <summary>
 	/// Stateful presenter implementation.
 	/// </summary>
 	/// <typeparam name="TView"></typeparam>
 	/// <typeparam name="TModel"></typeparam>
-	public abstract class Presenter<TView, TModel> 
-		where TView : ModuleView
+	public abstract class Presenter<TView, TModel> : IPresenter
+		where TView : PresentationView
 	{
 		protected TView View;
 		protected readonly TModel Model;
@@ -70,7 +77,7 @@ namespace Presentation.Core
 	/// Presenter that doesn't need any state so it will use 'EmptyModel' model.
 	/// </summary>
 	public abstract class StatelessPresenter<TView> : Presenter<TView, EmptyModel>
-		where TView : ModuleView
+		where TView : PresentationView
 	{
 		protected StatelessPresenter(IModuleViewProvider<TView> viewProvider) : base(viewProvider, new EmptyModel())
 		{ }

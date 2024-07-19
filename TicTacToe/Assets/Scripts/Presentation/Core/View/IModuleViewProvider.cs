@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Presentation.Core
+namespace Presentation
 {
 	public interface IModuleViewProvider<out TView> where TView : MonoBehaviour
 	{

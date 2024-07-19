@@ -1,10 +1,11 @@
 {
-    "name": "Presentation.Presenters",
+    "name": "Presentation",
     "rootNamespace": "",
     "references": [
-        "GUID:2a27567e9750345ff81cd41624e5939c",
-        "GUID:33fc99e85bb174638ac4a9c3c3584b27",
-        "GUID:9076c2ee776a945b79254dcd2ec5a833"
+        "GUID:9076c2ee776a945b79254dcd2ec5a833",
+        "GUID:ccedcf4dedd5e444a855f341fa797098",
+        "GUID:77aea589fe3f34fa883d9f7e26eee12e",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TicTacToe.Engine
+namespace Core
 {
 	public class Board
 	{

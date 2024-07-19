@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace TicTacToe.Engine
+namespace Core
 {
 	public class GameEngine
 	{
@@ -19,7 +19,7 @@ namespace TicTacToe.Engine
 			PlayerOneId = playerOneId;
 			PlayerTwoId = playerTwoId;
 
-			TurnNumber = 0;
+			TurnNumber = 1;
 			TurnOwner = PlayerOneId;
 
 			_board.Reset();
