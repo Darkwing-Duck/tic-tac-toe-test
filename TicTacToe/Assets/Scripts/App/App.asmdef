@@ -1,8 +1,10 @@
 {
-    "name": "Commands",
+    "name": "App",
     "rootNamespace": "",
     "references": [
-        "GUID:77aea589fe3f34fa883d9f7e26eee12e"
+        "GUID:77aea589fe3f34fa883d9f7e26eee12e",
+        "GUID:9076c2ee776a945b79254dcd2ec5a833",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
