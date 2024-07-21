@@ -1,21 +1,22 @@
+using Commands;
+using VitalRouter;
+
 namespace Presentation
 {
-	public interface IScreen
-	{ }
-	
-	public interface IAppNavigator
-	{
-		void GoTo<TScreen>() where TScreen : IScreen, IPresenter;
-	}
-	
-	public class AppNavigationPresenter : StatelessPresenter<AppNavigationView>, IAppNavigator
+	[Routes]
+	public partial class AppNavigationPresenter : StatelessPresenter<AppNavigationView>
 	{
 		private IPresenter _currentScreen;
 		private IPresenterFactory _presenterFactory;
+		private ICommandSubscribable _router;
 		
-		public AppNavigationPresenter(IModuleViewProvider<AppNavigationView> viewProvider, IPresenterFactory presenterFactory) : base(viewProvider)
+		public AppNavigationPresenter(
+			IModuleViewProvider<AppNavigationView> viewProvider, 
+			IPresenterFactory presenterFactory,
+			ICommandSubscribable router) : base(viewProvider)
 		{
 			_presenterFactory = presenterFactory;
+			_router = router;
 		}
 
 		protected override void InitializeView(AppNavigationView view)
@@ -25,15 +26,20 @@ namespace Presentation
 
 		protected override void OnActivate()
 		{
+			MapTo(_router);
 			GoTo<LoadingScreenPresenter>();
 		}
 
 		protected override void OnDeactivate()
 		{
+			UnmapRoutes();
 			_currentScreen?.Hide();
 		}
+		
+		public void On(LoadingStateActivated cmd) => GoTo<LoadingScreenPresenter>();
+		public void On(GameStateActivated cmd) => GoTo<GameScreenPresenter>();
 
-		public void GoTo<TScreen>() where TScreen : IScreen, IPresenter
+		private void GoTo<TScreen>() where TScreen : IPresenter
 		{
 			_currentScreen?.Hide();
 			_currentScreen = _presenterFactory.Create<TScreen>();

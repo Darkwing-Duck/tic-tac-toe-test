@@ -6,6 +6,11 @@ namespace Presentation
 	{
 		[SerializeField]
 		private BoardView _boardView;
+		
+		[SerializeField]
+		private GameHUDView _hud;
+		
 		public BoardView Board => _boardView;
+		public GameHUDView HUD => _hud;
 	}
 }

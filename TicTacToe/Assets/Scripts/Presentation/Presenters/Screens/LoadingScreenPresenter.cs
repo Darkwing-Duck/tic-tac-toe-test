@@ -1,12 +1,15 @@
+using App.States;
+using App.States.Gameplay;
+
 namespace Presentation
 {
-	public class LoadingScreenPresenter : StatelessPresenter<LoadingScreenView>, IScreen
+	public class LoadingScreenPresenter : StatelessPresenter<LoadingScreenView>
 	{
-		private readonly IAppNavigator _navigator;
+		private readonly IAppNavigatorService _appNavigator;
 		
-		public LoadingScreenPresenter(IModuleViewProvider<LoadingScreenView> viewProvider, IAppNavigator navigator) : base(viewProvider)
+		public LoadingScreenPresenter(IModuleViewProvider<LoadingScreenView> viewProvider, IAppNavigatorService appNavigator) : base(viewProvider)
 		{
-			_navigator = navigator;
+			_appNavigator = appNavigator;
 		}
 		
 		protected override void InitializeView(LoadingScreenView view)
@@ -16,7 +19,7 @@ namespace Presentation
 
 		protected override void OnActivate()
 		{
-			_navigator.GoTo<GameScreenPresenter>();
+			_appNavigator.GoToState<GameState>();
 		}
 	}
 }

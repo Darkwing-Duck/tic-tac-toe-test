@@ -4,20 +4,40 @@ namespace Core
 {
 	public class Board
 	{
-		private const int BoardSize = 3;
-		private readonly int[] _slots = new int[BoardSize * BoardSize];
+		public readonly int Size = 3;
+		private readonly int[] _slots;
 
-		public bool OccupySlot(Vector2Int location, int value)
+		public Board()
 		{
-			return true;
+			_slots = new int[Size * Size];
 		}
-		
+
 		public bool IsSlotFree(Vector2Int location)
 		{
+			var slotIndex = BoardUtils.PositionToIndex(location, Size);
+			return IsSlotFree(slotIndex);
+		}
+		
+		private bool IsSlotFree(int index) => _slots[index] == 0;
+
+		public int GetValueAt(Vector2Int position)
+		{
+			var slotIndex = BoardUtils.PositionToIndex(position, Size);
+			return _slots[slotIndex];
+		}
+		
+		internal bool OccupySlot(Vector2Int location, int value)
+		{
+			if (!IsSlotFree(location)) {
+				return false;
+			}
+			
+			var slotIndex = BoardUtils.PositionToIndex(location, Size);
+			_slots[slotIndex] = value;
 			return true;
 		}
 
-		public void Reset()
+		internal void Reset()
 		{
 			for (var i = 0; i < _slots.Length; i++) {
 				_slots[i] = 0;

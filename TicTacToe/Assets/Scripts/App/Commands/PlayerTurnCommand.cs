@@ -5,10 +5,12 @@ namespace Commands
 {
 	public readonly struct PlayerTurnCommand : ICommand
 	{
+		public readonly int Owner;
 		public readonly Vector2Int Position;
 
-		public PlayerTurnCommand(Vector2Int position)
+		public PlayerTurnCommand(int owner, Vector2Int position)
 		{
+			Owner = owner;
 			Position = position;
 		}
 	}

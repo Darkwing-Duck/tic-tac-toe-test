@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Commands;
+using Core;
 using Presentation;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -18,10 +19,12 @@ namespace Input
 		private Vector2 _positionCache = Vector2.zero;
 		private readonly List<RaycastResult> _raycastResults = new();
 		private ICommandPublisher _commandPublisher;
+		private GameEngine _engine;
 
-		public MousePlayerInput(ICommandPublisher commandPublisher)
+		public MousePlayerInput(ICommandPublisher commandPublisher, GameEngine engine)
 		{
 			_commandPublisher = commandPublisher;
+			_engine = engine;
 		}
 
 		public void Tick()
@@ -33,8 +36,9 @@ namespace Input
 			if (!TryGetClickedSlotPosition(out var slotPosition)) {
 				return;
 			}
-			
-			_commandPublisher.Enqueue(new PlayerTurnCommand(slotPosition));
+
+			var turnOwner = _engine.TurnOwner;
+			_commandPublisher.Enqueue(new PlayerTurnCommand(turnOwner, slotPosition));
 		}
 
 		private bool TryGetClickedSlotPosition(out Vector2Int result)

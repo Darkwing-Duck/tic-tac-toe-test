@@ -1,25 +1,32 @@
+using App.Services;
+using App.States;
+using App.States.Gameplay;
 using Commands;
+using Core;
 using UnityEngine;
-using VContainer;
-using VContainer.Unity;
 using VitalRouter;
 
 namespace Presentation
 {
 	[Routes]
-	public partial class GameScreenPresenter : StatelessPresenter<GameScreenView>, IScreen
+	public partial class GameScreenPresenter : StatelessPresenter<GameScreenView>
 	{
-		private IPresenterFactory _factory;
-		private IGameplayInstaller _installer;
-		private LifetimeScope _gameplayeScope;
+		private readonly IPresenterFactory _factory;
+		private readonly IPlayerService _playerService;
+		private readonly ICommandSubscribable _router;
+		private readonly IAppNavigatorService _navigator;
 		
 		public GameScreenPresenter(
 			IModuleViewProvider<GameScreenView> viewProvider, 
 			IPresenterFactory factory,
-			IGameplayInstaller installer) : base(viewProvider)
+			ICommandSubscribable router,
+			IPlayerService playerService,
+			IAppNavigatorService navigator) : base(viewProvider)
 		{
 			_factory = factory;
-			_installer = installer;
+			_router = router;
+			_playerService = playerService;
+			_navigator = navigator;
 		}
 
 		protected override void InitializeView(GameScreenView view)
@@ -29,35 +36,40 @@ namespace Presentation
 
 		protected override void OnActivate()
 		{
-			// install gameplay dependencies
-			var parentScope = View.transform.GetComponentInParent<LifetimeScope>();
-			_gameplayeScope = parentScope.CreateChild(_installer);
-			_gameplayeScope.transform.SetParent(View.transform);
-			_gameplayeScope.name = "Gameplay DI Scope";
-
 			// subscribe presenter to get notifications from the router
-			var router = _gameplayeScope.Container.Resolve<Router>();
-			MapTo(router);
+			MapTo(_router);
 		}
 
 		protected override void OnDeactivate()
 		{
-			// dispose gameplay dependencies scope
-			_gameplayeScope.Dispose();
+			UnmapRoutes();
 		}
 
 		public void On(PlayerTurnCommand cmd)
 		{
-			AddBoardElementAt(cmd.Position);
+			AddBoardElementAt(cmd.Owner, cmd.Position);
 		}
 		
-		public void AddBoardElementAt(Vector2Int position)
+		public void On(NextTurnCommand cmd)
 		{
-			Debug.Log($"Player has tapped at {position}");
-			var slotIndex = position.y * 3 + position.x;
+			View.HUD.SetTurnNumber(cmd.TurnNumber);
+			View.HUD.SetTurnOwner(cmd.TurnOwner);
+		}
+		
+		public void On(GameFinishedCommand cmd)
+		{
+			_navigator.GoToState<GameState>();
+		}
+		
+		private void AddBoardElementAt(int turnOwner, Vector2Int position)
+		{
+			var slotIndex = BoardUtils.PositionToIndex(position, 3);
 			var slotView = View.Board.GetSlot(slotIndex);
 			var provider = new ResourcesViewProvider<BoardElementView>();
-			provider.Get(slotView.transform);
+			var view = provider.Get(slotView.transform);
+			var ownerPlayerInfo = _playerService.GetPlayer(turnOwner);
+			
+			view.SetIcon(ownerPlayerInfo.SymbolKey.ToString());
 		}
 	}
 }
