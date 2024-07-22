@@ -1,3 +1,5 @@
+using App.Common;
+using VContainer.Unity;
 using VitalRouter;
 
 namespace App.States
@@ -39,7 +41,7 @@ namespace App.States
 		void GoToState<TState>() where TState : IAppState;
 	}
 	
-	public class AppNavigatorService : IAppNavigatorService
+	public class AppNavigatorService : IAppNavigatorService, ITickable
 	{
 		public IAppState ActiveState { get; private set; }
 
@@ -50,6 +52,13 @@ namespace App.States
 		{
 			_stateFactory = stateFactory;
 			_commandPublisher = commandPublisher;
+		}
+
+		public void Tick()
+		{
+			if (ActiveState is IUpdatable casted) {
+				casted.Update();
+			}
 		}
 
 		public void GoToState<TState>() where TState : IAppState

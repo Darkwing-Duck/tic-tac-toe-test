@@ -1,6 +1,5 @@
-using App.Services;
+using App.Match;
 using App.States;
-using App.States.Gameplay;
 using Commands;
 using Core;
 using UnityEngine;
@@ -12,7 +11,7 @@ namespace Presentation
 	public partial class GameScreenPresenter : StatelessPresenter<GameScreenView>
 	{
 		private readonly IPresenterFactory _factory;
-		private readonly IPlayerService _playerService;
+		private readonly IMatchService _matchService;
 		private readonly ICommandSubscribable _router;
 		private readonly IAppNavigatorService _navigator;
 		
@@ -20,12 +19,12 @@ namespace Presentation
 			IModuleViewProvider<GameScreenView> viewProvider, 
 			IPresenterFactory factory,
 			ICommandSubscribable router,
-			IPlayerService playerService,
+			IMatchService matchService,
 			IAppNavigatorService navigator) : base(viewProvider)
 		{
 			_factory = factory;
 			_router = router;
-			_playerService = playerService;
+			_matchService = matchService;
 			_navigator = navigator;
 		}
 
@@ -58,7 +57,7 @@ namespace Presentation
 		
 		public void On(GameFinishedCommand cmd)
 		{
-			_navigator.GoToState<GameState>();
+			_navigator.GoToState<HomeState>();
 		}
 		
 		private void AddBoardElementAt(int turnOwner, Vector2Int position)
@@ -67,9 +66,9 @@ namespace Presentation
 			var slotView = View.Board.GetSlot(slotIndex);
 			var provider = new ResourcesViewProvider<BoardElementView>();
 			var view = provider.Get(slotView.transform);
-			var ownerPlayerInfo = _playerService.GetPlayer(turnOwner);
+			var playerSymbol = _matchService.GetPlayerSymbol(turnOwner);
 			
-			view.SetIcon(ownerPlayerInfo.SymbolKey.ToString());
+			view.SetIcon(playerSymbol.ToString());
 		}
 	}
 }

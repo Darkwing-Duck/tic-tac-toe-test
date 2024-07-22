@@ -1,38 +1,21 @@
-using App.Services;
+using App.Common;
+using App.Match;
 using Commands;
-using Core;
 
 namespace App.States.Gameplay
 {
-	public class GameState : AppState<GameStateActivated>
+	public class GameState : AppState<GameStateActivated>, IUpdatable
 	{
-		private readonly IPlayerService _playerService;
-		private readonly GameEngine _gameEngine;
+		private readonly IMatchService _matchService;
 
-		public GameState(IPlayerService playerService, GameEngine gameEngine)
+		public GameState(IMatchService matchService)
 		{
-			_playerService = playerService;
-			_gameEngine = gameEngine;
+			_matchService = matchService;
 		}
 
-		protected override void OnActivate()
+		public void Update()
 		{
-			var playerId1 = 1;
-			var playerId2 = 2;
-			
-			// initialize game engine with player ids 
-			_gameEngine.Initialize(playerId1, playerId2);
-
-			// define who turns first and who second 
-			var startPlayerId = _gameEngine.TurnOwner;
-			var secondPlayerId = startPlayerId == playerId1 
-				? playerId2 
-				: playerId1;
-			
-			// initialize which symbol should be used by which player
-			_playerService.InitializePlayers(
-				new PlayerInfo(startPlayerId, SymbolKey.Cross), 
-				new PlayerInfo(secondPlayerId, SymbolKey.Circle));
+			_matchService.Update();
 		}
 	}
 }

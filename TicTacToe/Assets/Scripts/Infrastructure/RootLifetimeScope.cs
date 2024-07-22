@@ -1,8 +1,7 @@
-using App.Services;
+using App.Match;
 using App.States;
 using App.States.Gameplay;
 using Core;
-using Input;
 using Mutators;
 using Presentation;
 using VContainer;
@@ -19,11 +18,11 @@ namespace Infrastructure
 			builder.RegisterEntryPoint<Startup>();
 			
 			// Services
-			builder.Register<AppNavigatorService>(Lifetime.Scoped).As<IAppNavigatorService>();
-			builder.RegisterEntryPoint<PlayerService>().As<IPlayerService>();
+			builder.RegisterEntryPoint<AppNavigatorService>(Lifetime.Scoped).As<IAppNavigatorService>();
+			builder.Register<MatchService>(Lifetime.Scoped).As<IMatchService>();
 			
 			// App States
-			builder.Register<LoadingState>(Lifetime.Transient);
+			builder.Register<HomeState>(Lifetime.Transient);
 			builder.Register<GameState>(Lifetime.Transient);
 			
 			// factories
@@ -32,12 +31,12 @@ namespace Infrastructure
 			
 			// presenters
 			builder.Register<AppNavigationPresenter>(Lifetime.Scoped);
-			builder.Register<LoadingScreenPresenter>(Lifetime.Transient);
+			builder.Register<HomeScreenPresenter>(Lifetime.Transient);
 			builder.Register<GameScreenPresenter>(Lifetime.Transient);
 			
 			// view providers
 			builder.Register<ResourcesViewProvider<GameScreenView>>(Lifetime.Transient).As<IModuleViewProvider<GameScreenView>>();
-			builder.Register<ResourcesViewProvider<LoadingScreenView>>(Lifetime.Transient).As<IModuleViewProvider<LoadingScreenView>>();
+			builder.Register<ResourcesViewProvider<HomeScreenView>>(Lifetime.Transient).As<IModuleViewProvider<HomeScreenView>>();
 			builder.Register<ResourcesViewProvider<AppNavigationView>>(Lifetime.Transient).As<IModuleViewProvider<AppNavigationView>>();
 			
 			// Engine
@@ -47,10 +46,8 @@ namespace Infrastructure
 			// router
 			builder.RegisterVitalRouter(routing => {
 				routing.Filters.Add<PlayerTurnMutator>();
+				routing.Filters.Add<ActivatePlayerInputInterceptor>();
 			});
-			
-			// input
-			builder.RegisterEntryPoint<MousePlayerInput>();
 		}
 	}
 }

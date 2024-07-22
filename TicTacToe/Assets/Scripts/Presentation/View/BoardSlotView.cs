@@ -1,8 +1,9 @@
+using App.Match;
 using UnityEngine;
 
 namespace Presentation
 {
-	public class BoardSlotView : MonoBehaviour
+	public class BoardSlotView : MonoBehaviour, IPlayerInputSource
 	{
 		[SerializeField]
 		private Vector2Int _slotPosition;

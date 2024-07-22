@@ -1,49 +1,35 @@
 using System.Collections.Generic;
-using Commands;
-using Core;
-using Presentation;
+using App.Common;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using VContainer.Unity;
-using VitalRouter;
 
-namespace Input
+namespace App.Match
 {
-	public interface IPlayerInput
-	{
-		
-	}
-	
-	public class MousePlayerInput : IPlayerInput, ITickable
+	public class LocalPlayerInput : MatchPlayerInput, IUpdatable
 	{
 		private Vector2 _positionCache = Vector2.zero;
 		private readonly List<RaycastResult> _raycastResults = new();
-		private ICommandPublisher _commandPublisher;
-		private GameEngine _engine;
 
-		public MousePlayerInput(ICommandPublisher commandPublisher, GameEngine engine)
-		{
-			_commandPublisher = commandPublisher;
-			_engine = engine;
-		}
+		public LocalPlayerInput(int playerId, SymbolKey symbolKey, IMatchPlayerOutput output) : base(playerId, symbolKey, output)
+		{ }
 
-		public void Tick()
+		public void Update()
 		{
-			if (!UnityEngine.Input.GetMouseButtonUp(0)) {
+			if (!Input.GetMouseButtonUp(0)) {
 				return;
 			}
 			
 			if (!TryGetClickedSlotPosition(out var slotPosition)) {
 				return;
 			}
-
-			var turnOwner = _engine.TurnOwner;
-			_commandPublisher.Enqueue(new PlayerTurnCommand(turnOwner, slotPosition));
+			
+			// Notify outer world about decision made by this player
+			MakeTurnAt(slotPosition);
 		}
-
+		
 		private bool TryGetClickedSlotPosition(out Vector2Int result)
 		{
-			var mousePosition = UnityEngine.Input.mousePosition;
+			var mousePosition = Input.mousePosition;
 			_positionCache.Set(mousePosition.x, mousePosition.y);
 				
 			var eventData = new PointerEventData(EventSystem.current) { position = _positionCache };
@@ -56,7 +42,7 @@ namespace Input
 
 			var firstUiElement = _raycastResults[0];
 
-			if (!firstUiElement.gameObject.TryGetComponent<BoardSlotView>(out var slotView)) {
+			if (!firstUiElement.gameObject.TryGetComponent<IPlayerInputSource>(out var slotView)) {
 				result = default;
 				return false;
 			}

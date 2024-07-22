@@ -27,7 +27,6 @@ namespace Presentation
 		protected override void OnActivate()
 		{
 			MapTo(_router);
-			GoTo<LoadingScreenPresenter>();
 		}
 
 		protected override void OnDeactivate()
@@ -36,7 +35,7 @@ namespace Presentation
 			_currentScreen?.Hide();
 		}
 		
-		public void On(LoadingStateActivated cmd) => GoTo<LoadingScreenPresenter>();
+		public void On(HomeStateActivated cmd) => GoTo<HomeScreenPresenter>();
 		public void On(GameStateActivated cmd) => GoTo<GameScreenPresenter>();
 
 		private void GoTo<TScreen>() where TScreen : IPresenter
