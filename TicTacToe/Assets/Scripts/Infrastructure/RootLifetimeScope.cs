@@ -46,11 +46,10 @@ namespace Infrastructure
 			
 			// Engine
 			builder.Register<GameResultCalculator>(Lifetime.Scoped).As<IGameResultCalculator>();
-			builder.Register<GameEngine>(Lifetime.Scoped);
+			builder.Register<GameEngine>(Lifetime.Scoped).As<IEngine, IEngineReadOnly>();
 			
 			// router
 			builder.RegisterVitalRouter(routing => {
-				routing.Filters.Add<PlayerTurnMutator>();
 				routing.Filters.Add<ActivatePlayerInputInterceptor>();
 			});
 		}

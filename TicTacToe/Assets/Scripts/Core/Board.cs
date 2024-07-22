@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Utils;
 
@@ -25,6 +26,21 @@ namespace Core
 		{
 			var slotIndex = BoardUtils.PositionToIndex(position, Size);
 			return _slots[slotIndex];
+		}
+		
+		public IReadOnlyList<Vector2Int> GetFreeCells()
+		{
+			var result = new List<Vector2Int>();
+			
+			for (var i = 0; i < _slots.Length; i++) {
+				if (IsSlotFree(i)) {
+					var cell = BoardUtils.IndexToPosition(i, Size);
+					result.Add(BoardUtils.IndexToPosition(i, Size));
+					Debug.Log($"index: {i} - cell: {cell}");
+				}
+			}
+
+			return result;
 		}
 		
 		internal bool OccupySlot(Vector2Int location, int value)

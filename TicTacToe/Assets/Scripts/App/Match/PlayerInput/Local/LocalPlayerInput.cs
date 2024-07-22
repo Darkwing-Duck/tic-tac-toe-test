@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using App.Common;
+using Core;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -10,8 +11,13 @@ namespace App.Match
 		private Vector2 _positionCache = Vector2.zero;
 		private readonly List<RaycastResult> _raycastResults = new();
 
-		public LocalPlayerInput(int playerId, SymbolKey symbolKey, IMatchPlayerOutput output) : base(playerId, symbolKey, output)
-		{ }
+		public LocalPlayerInput(
+			int playerId, 
+			SymbolKey symbolKey,
+			IEngineReadOnly matchData,
+			IMatchPlayerOutput output) : base(playerId, symbolKey, matchData, output)
+		{
+		}
 
 		public void Update()
 		{

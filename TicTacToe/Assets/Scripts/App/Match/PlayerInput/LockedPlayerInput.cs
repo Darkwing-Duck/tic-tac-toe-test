@@ -5,7 +5,7 @@ namespace App.Match
 	/// </summary>
 	public class LockedPlayerInput : MatchPlayerInput
 	{
-		public LockedPlayerInput() : base(-1, SymbolKey.Cross, null)
+		public LockedPlayerInput() : base(-1, SymbolKey.Cross, null, null)
 		{ }
 	}
 }

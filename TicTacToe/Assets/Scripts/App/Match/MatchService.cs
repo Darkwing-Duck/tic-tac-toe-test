@@ -42,7 +42,7 @@ namespace App.Match
 		private readonly MatchPlayerInput[] _inputs = new MatchPlayerInput[2];
 		private readonly LockedPlayerInput _lockedPlayerInput = new();
 		
-		private readonly GameEngine _gameEngine;
+		private readonly IEngine _gameEngine;
 		private readonly ICommandPublisher _commandPublisher;
 		private readonly IAppNavigatorService _appNavigator;
 
@@ -50,7 +50,7 @@ namespace App.Match
 
 		public MatchType CurrentMatchType { get; private set; }
 
-		public MatchService(GameEngine gameEngine, IAppNavigatorService appNavigator, ICommandPublisher commandPublisher)
+		public MatchService(IEngine gameEngine, IAppNavigatorService appNavigator, ICommandPublisher commandPublisher)
 		{
 			_gameEngine = gameEngine;
 			_commandPublisher = commandPublisher;
@@ -67,6 +67,9 @@ namespace App.Match
 			
 			_appNavigator.GoToState<GameState>();
 			
+			// initialize game engine with player ids 
+			_gameEngine.Initialize(playerId1, playerId2);
+			
 			switch (type) {
 				case MatchType.PlayerVsPlayer:
 					StartMatchInternal<LocalPlayerInput, LocalPlayerInput>(playerId1, playerId2);
@@ -80,13 +83,14 @@ namespace App.Match
 				default:
 					throw new ArgumentException($"Unsupported match type '{type}'");
 			}
-
+			
 			NotifyNextTurn();
 		}
 
 		public void ActivateInput()
 		{
 			_activeInput = GetPlayerInputFor(_gameEngine.TurnOwner);
+			_activeInput.Activate();
 		}
 
 		public SymbolKey GetPlayerSymbol(int playerId)
@@ -96,8 +100,15 @@ namespace App.Match
 
 		public void MakeTurn(int playerId, Vector2Int position)
 		{
-			_activeInput = _lockedPlayerInput;
-			_commandPublisher.Enqueue(new PlayerTurnCommand(playerId, position));
+			if (!_gameEngine.Board.IsSlotFree(position)) {
+				// TODO: Notify presentation layer about wrong choice
+				return;
+			}
+
+			DeactivateInput();
+			
+			_gameEngine.Turn(playerId, position);
+			_commandPublisher.Enqueue(new PlayerMadeTurnCommand(playerId, position));
 
 			if (_gameEngine.TryGetGameResult(out var result)) {
 				_commandPublisher.Enqueue(new GameFinishedCommand(result));
@@ -117,6 +128,12 @@ namespace App.Match
 			return true;
 		}
 
+		private void DeactivateInput()
+		{
+			_activeInput.Deactivate();
+			_activeInput = _lockedPlayerInput;
+		}
+
 		private void NotifyNextTurn()
 		{
 			_commandPublisher.Enqueue(new NextTurnCommand(_gameEngine.TurnNumber, _gameEngine.TurnOwner));
@@ -134,9 +151,6 @@ namespace App.Match
 			where TInput1 : MatchPlayerInput
 			where TInput2 : MatchPlayerInput
 		{
-			// initialize game engine with player ids 
-			_gameEngine.Initialize(playerId1, playerId2);
-			
 			InitializeInputs<TInput1, TInput2>(playerId1, playerId2);
 		}
 
@@ -156,7 +170,10 @@ namespace App.Match
 
 		private MatchPlayerInput CreatePlayerInput<T>(int playerId, SymbolKey symbolKey) where T : MatchPlayerInput
 		{
-			return (MatchPlayerInput)Activator.CreateInstance(typeof(T), new object[] { playerId, symbolKey, this });
+			return (MatchPlayerInput)Activator.CreateInstance(typeof(T), new object[]
+			{
+				playerId, symbolKey, _gameEngine, this
+			});
 		}
 
 		private MatchPlayerInput GetPlayerInputFor(int playerId)

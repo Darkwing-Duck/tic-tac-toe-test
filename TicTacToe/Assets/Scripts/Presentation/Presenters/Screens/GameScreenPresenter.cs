@@ -44,7 +44,7 @@ namespace Presentation
 			UnmapRoutes();
 		}
 
-		public void On(PlayerTurnCommand cmd)
+		public void On(PlayerMadeTurnCommand cmd)
 		{
 			AddBoardElementAt(cmd.Owner, cmd.Position);
 		}
