@@ -1,8 +1,8 @@
 using App.Match;
 using Commands;
-using Core;
 using Presentation.Popups;
 using UnityEngine;
+using Utils;
 using VitalRouter;
 
 namespace Presentation
@@ -55,7 +55,7 @@ namespace Presentation
 			View.HUD.SetTurnOwner(cmd.TurnOwner);
 		}
 		
-		public void On(GameFinishedCommand cmd)
+		public void On(GameFinishedCommand _)
 		{
 			_popupService.Show<GameResultPopupPresenter>();
 		}

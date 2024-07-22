@@ -2,12 +2,11 @@
     "name": "Presentation",
     "rootNamespace": "",
     "references": [
-        "GUID:9076c2ee776a945b79254dcd2ec5a833",
         "GUID:77aea589fe3f34fa883d9f7e26eee12e",
         "GUID:f51ebe6a0ceec4240a699833d6309b23",
         "GUID:abadaf7d3b58b48738e6ebfdffea2742",
         "GUID:6055be8ebefd69e48b49212b09b47b2f",
-        "GUID:a8b1698ccb8ee44f6a29376b642986c9"
+        "GUID:0a622e12e5dcc43d58d3f6b17d71d4a5"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

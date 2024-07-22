@@ -1,7 +1,6 @@
 using System;
 using App.Match;
 using App.States;
-using Core;
 
 namespace Presentation.Popups
 {
@@ -10,7 +9,6 @@ namespace Presentation.Popups
 		private readonly IAppNavigatorService _appNavigator;
 		private readonly IPopupService _popupService;
 		private readonly IMatchService _matchService;
-		private readonly GameEngine _gameEngine;
 
 		public GameResultPopupPresenter(
 			IViewProvider<GameResultPopupView> viewProvider,
