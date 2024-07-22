@@ -5,6 +5,9 @@ using VContainer.Unity;
 
 namespace Infrastructure
 {
+	/// <summary>
+	/// Entry point of the application
+	/// </summary>
 	public class Startup : IInitializable
 	{
 		private LifetimeScope _scope;
@@ -20,12 +23,15 @@ namespace Infrastructure
 
 		public void Initialize()
 		{
+			// create root app presenter
 			var navigationPresenter = _presenterFactory.Create<AppNavigationPresenter>();
 			navigationPresenter.ShowUnder(_scope.transform);
 			
+			// create popups layer presenter, that will display popups
 			var popupsLayerPresenter = _presenterFactory.Create<PopupsLayerPresenter>();
 			popupsLayerPresenter.ShowUnder(_scope.transform);
 			
+			// go to the first screen
 			_appNavigator.GoToState<HomeState>();
 		}
 	}

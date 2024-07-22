@@ -3,6 +3,10 @@ using VitalRouter;
 
 namespace Commands
 {
+	
+	/// <summary>
+	/// Notifies GameScreenPresenter that a turn have been made to sync visual state
+	/// </summary>
 	public readonly struct PlayerMadeTurnCommand : ICommand
 	{
 		public readonly int Owner;

@@ -3,6 +3,9 @@ using UnityEngine;
 namespace Presentation
 {
 
+	/// <summary>
+	/// Describes high level actions we can do with any presenter
+	/// </summary>
 	public interface IPresenter
 	{
 		void Show();
@@ -62,7 +65,11 @@ namespace Presentation
 		public void Hide()
 		{
 			View.OnDestroyed -= OnViewWasDestroyedImplicitly;
-			_viewProvider.Release();
+
+			if (_viewProvider is ICanRelease<TView> casted) {
+				casted.Release(View);
+			}
+			
 			OnDeactivate();
 		}
 		

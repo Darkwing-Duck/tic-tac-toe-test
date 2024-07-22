@@ -10,43 +10,24 @@ using VitalRouter;
 
 namespace App.Match
 {
-	public enum SymbolKey
-	{
-		Cross,
-		Circle
-	}
-
-	public class MatchResult
-	{
-		public readonly int Winner;
-		public readonly Vector2Int[] WinSlots;
-
-		public MatchResult(int winner, Vector2Int[] winSlots)
-		{
-			Winner = winner;
-			WinSlots = winSlots;
-		}
-	}
-	
-	public interface IMatchService : IUpdatable
-	{
-		MatchType CurrentMatchType { get; }
-		void StartMatch(MatchType type);
-		void ActivateInput();
-		SymbolKey GetPlayerSymbol(int playerId);
-		bool TryGetResult(out MatchResult result);
-	}
-	
 	public class MatchService : IMatchService, IMatchPlayerOutput
 	{
-		private readonly MatchPlayerInput[] _inputs = new MatchPlayerInput[2];
+		private readonly IMatchPlayerInput[] _inputs = new IMatchPlayerInput[2];
+		
+		/// <summary>
+		/// Mock player input used to lock any player input
+		/// </summary>
 		private readonly LockedPlayerInput _lockedPlayerInput = new();
 		
 		private readonly IEngine _gameEngine;
 		private readonly ICommandPublisher _commandPublisher;
 		private readonly IAppNavigatorService _appNavigator;
 
-		private MatchPlayerInput _activeInput;
+		/// <summary>
+		/// Currently active input.
+		/// If we are not waiting for any input then it will be LockedPlayerInput
+		/// </summary>
+		private IMatchPlayerInput _activeInput;
 
 		public MatchType CurrentMatchType { get; private set; }
 
@@ -58,6 +39,9 @@ namespace App.Match
 			_activeInput = _lockedPlayerInput;
 		}
 		
+		/// <summary>
+		/// Starting a match by specified type
+		/// </summary>
 		public void StartMatch(MatchType type)
 		{
 			var playerId1 = 1;
@@ -87,17 +71,27 @@ namespace App.Match
 			NotifyNextTurn();
 		}
 
+		/// <summary>
+		/// Activates actual input based on engine state
+		/// </summary>
 		public void ActivateInput()
 		{
 			_activeInput = GetPlayerInputFor(_gameEngine.TurnOwner);
 			_activeInput.Activate();
 		}
 
+		/// <summary>
+		/// Returns a symbol for specified player
+		/// </summary>
 		public SymbolKey GetPlayerSymbol(int playerId)
 		{
 			return GetPlayerInputFor(playerId).SymbolKey;
 		}
 
+		/// <summary>
+		/// Core app logic for making a turn.
+		/// Makes a turn for specified player in specified position
+		/// </summary>
 		public void MakeTurn(int playerId, Vector2Int position)
 		{
 			if (!_gameEngine.Board.IsSlotFree(position)) {
@@ -107,9 +101,14 @@ namespace App.Match
 
 			DeactivateInput();
 			
+			// change engine state
 			_gameEngine.Turn(playerId, position);
+			
+			// notify outer world that the turn have been made 
 			_commandPublisher.Enqueue(new PlayerMadeTurnCommand(playerId, position));
 
+			// if engine already has a result we send a game finish notfication
+			// else notifying about next turn
 			if (_gameEngine.TryGetGameResult(out var result)) {
 				_commandPublisher.Enqueue(new GameFinishedCommand(result));
 			} else {
@@ -117,6 +116,9 @@ namespace App.Match
 			}
 		}
 
+		/// <summary>
+		/// Provides access to computed result if there is
+		/// </summary>
 		public bool TryGetResult(out MatchResult result)
 		{
 			if (!_gameEngine.TryGetGameResult(out var gameResult)) {
@@ -126,6 +128,16 @@ namespace App.Match
 
 			result = new MatchResult(gameResult.Winner, gameResult.WinSlots);
 			return true;
+		}
+		
+		/// <summary>
+		/// Updates active player input if it's updatable
+		/// </summary>
+		public void Update()
+		{
+			if (_activeInput is IUpdatable casted) {
+				casted.Update();
+			}
 		}
 
 		private void DeactivateInput()
@@ -140,23 +152,16 @@ namespace App.Match
 			_commandPublisher.Enqueue(new ActivatePlayerInputCommand());
 		}
 
-		public void Update()
-		{
-			if (_activeInput is IUpdatable casted) {
-				casted.Update();
-			}
-		}
-
 		private void StartMatchInternal<TInput1, TInput2>(int playerId1, int playerId2)
-			where TInput1 : MatchPlayerInput
-			where TInput2 : MatchPlayerInput
+			where TInput1 : IMatchPlayerInput
+			where TInput2 : IMatchPlayerInput
 		{
 			InitializeInputs<TInput1, TInput2>(playerId1, playerId2);
 		}
 
 		private void InitializeInputs<TInput1, TInput2>(int playerId1, int playerId2)
-			where TInput1 : MatchPlayerInput
-			where TInput2 : MatchPlayerInput
+			where TInput1 : IMatchPlayerInput
+			where TInput2 : IMatchPlayerInput
 		{
 			// define who turns first and who second 
 			var startPlayerId = _gameEngine.TurnOwner;
@@ -168,15 +173,15 @@ namespace App.Match
 			_inputs[1] = CreatePlayerInput<TInput2>(secondPlayerId, SymbolKey.Circle);
 		}
 
-		private MatchPlayerInput CreatePlayerInput<T>(int playerId, SymbolKey symbolKey) where T : MatchPlayerInput
+		private IMatchPlayerInput CreatePlayerInput<T>(int playerId, SymbolKey symbolKey) where T : IMatchPlayerInput
 		{
-			return (MatchPlayerInput)Activator.CreateInstance(typeof(T), new object[]
+			return (IMatchPlayerInput)Activator.CreateInstance(typeof(T), new object[]
 			{
 				playerId, symbolKey, _gameEngine, this
 			});
 		}
 
-		private MatchPlayerInput GetPlayerInputFor(int playerId)
+		private IMatchPlayerInput GetPlayerInputFor(int playerId)
 		{
 			return _inputs.First(i => i.PlayerId == playerId);
 		}

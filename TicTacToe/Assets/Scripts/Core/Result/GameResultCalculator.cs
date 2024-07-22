@@ -3,15 +3,18 @@ using UnityEngine;
 
 namespace Core
 {
+	/// <summary>
+	/// Describes a strategy to calculate game result 
+	/// </summary>
 	public interface IGameResultCalculator
 	{
-		GameResult Calculate(Vector2Int fromPosition, ICalculatorDataProvider dataProvider);
-	}
-
-	public interface ICalculatorDataProvider
-	{
-		Board Board { get; }
-		int TurnNumber { get; }
+		/// <summary>
+		/// Calculates game result
+		/// </summary>
+		/// <param name="fromPosition">Last position a player interacted with</param>
+		/// <param name="dataProvider">Provides data to the actual game state</param>
+		/// <returns></returns>
+		GameResult Calculate(Vector2Int fromPosition, IEngineReadOnly dataProvider);
 	}
 	
 	public class GameResultCalculator : IGameResultCalculator
@@ -24,7 +27,7 @@ namespace Core
 		/// * more than 0 - playerId of winner<br />
 		/// * less than 0 - game is still not finished
 		/// </returns>
-		public GameResult Calculate(Vector2Int fromPosition, ICalculatorDataProvider dataProvider)
+		public GameResult Calculate(Vector2Int fromPosition, IEngineReadOnly dataProvider)
 		{
 			var board = dataProvider.Board;
 			var winSlots = new Vector2Int[3];

@@ -3,7 +3,10 @@ using UnityEngine;
 
 namespace Core
 {
-	public class GameEngine : IEngine, ICalculatorDataProvider
+	/// <summary>
+	/// Core business logic of the game.
+	/// </summary>
+	public class GameEngine : IEngine
 	{
 		private readonly IGameResultCalculator _resultCalculator;
 		

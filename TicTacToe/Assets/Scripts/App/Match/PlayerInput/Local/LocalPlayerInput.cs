@@ -6,6 +6,10 @@ using UnityEngine.EventSystems;
 
 namespace App.Match
 {
+	/// <summary>
+	/// Describes local player input strategy.
+	/// The logic is separated from the MonoBehaviour and using UI raycast to find a clink on board slot
+	/// </summary>
 	public class LocalPlayerInput : MatchPlayerInput, IUpdatable
 	{
 		private Vector2 _positionCache = Vector2.zero;

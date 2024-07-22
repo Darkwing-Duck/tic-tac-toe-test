@@ -5,6 +5,9 @@ using VitalRouter;
 
 namespace Mutators
 {
+	/// <summary>
+	/// Intercepts ActivatePlayerInputCommand and activates player inputs
+	/// </summary>
 	public class ActivatePlayerInputInterceptor : TypedCommandInterceptro<ActivatePlayerInputCommand>
 	{
 		private readonly IMatchService _matchService;

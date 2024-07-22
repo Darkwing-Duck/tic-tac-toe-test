@@ -6,6 +6,10 @@ using Random = UnityEngine.Random;
 
 namespace App.Match
 {
+	/// <summary>
+	/// Describes simple AI player input logic
+	/// Generally, it chooses a random free cell on the board 
+	/// </summary>
 	public class BotPlayerInput : MatchPlayerInput
 	{
 		public BotPlayerInput(
@@ -17,8 +21,11 @@ namespace App.Match
 
 		protected override async void OnActivate()
 		{
-			var delay = Random.Range(200, 1000); // bot thinking time (ms)
+			// bot thinking time (ms)
+			var delay = Random.Range(200, 1000); 
 			await UniTask.Delay(TimeSpan.FromMilliseconds(delay), ignoreTimeScale: false);
+			
+			// make a turn
 			MakeTurnAt(MakeTurnDecision());
 		}
 

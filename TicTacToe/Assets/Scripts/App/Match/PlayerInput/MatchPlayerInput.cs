@@ -3,16 +3,26 @@ using UnityEngine;
 
 namespace App.Match
 {
+	
+	/// <summary>
+	/// Describes common player input interface 
+	/// </summary>
 	public interface IMatchPlayerInput
 	{
+		public int PlayerId { get; }
+		public SymbolKey SymbolKey { get; }
+
 		void Activate();
 		void Deactivate();
 	}
 	
+	/// <summary>
+	/// Base match player input logic
+	/// </summary>
 	public abstract class MatchPlayerInput : IMatchPlayerInput
 	{
-		public readonly int PlayerId;
-		public readonly SymbolKey SymbolKey;
+		public int PlayerId { get; }
+		public SymbolKey SymbolKey { get; }
 
 		protected readonly IEngineReadOnly _matchData;
 		private readonly IMatchPlayerOutput _output;
