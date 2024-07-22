@@ -21,9 +21,9 @@ namespace Presentation
 		protected TView View;
 		protected readonly TModel Model;
 
-		private IModuleViewProvider<TView> _viewProvider;
+		private IViewProvider<TView> _viewProvider;
 
-		public Presenter(IModuleViewProvider<TView> viewProvider, TModel model)
+		public Presenter(IViewProvider<TView> viewProvider, TModel model)
 		{
 			_viewProvider = viewProvider;
 			Model = model;
@@ -79,7 +79,7 @@ namespace Presentation
 	public abstract class StatelessPresenter<TView> : Presenter<TView, EmptyModel>
 		where TView : PresentationView
 	{
-		protected StatelessPresenter(IModuleViewProvider<TView> viewProvider) : base(viewProvider, new EmptyModel())
+		protected StatelessPresenter(IViewProvider<TView> viewProvider) : base(viewProvider, new EmptyModel())
 		{ }
 	}
 	

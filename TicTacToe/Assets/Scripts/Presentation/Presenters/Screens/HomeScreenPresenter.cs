@@ -6,7 +6,7 @@ namespace Presentation
 	{
 		private readonly IMatchService _matchService;
 		
-		public HomeScreenPresenter(IModuleViewProvider<HomeScreenView> viewProvider, IMatchService matchService) : base(viewProvider)
+		public HomeScreenPresenter(IViewProvider<HomeScreenView> viewProvider, IMatchService matchService) : base(viewProvider)
 		{
 			_matchService = matchService;
 		}

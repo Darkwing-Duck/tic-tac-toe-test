@@ -11,7 +11,7 @@ namespace Presentation
 		private ICommandSubscribable _router;
 		
 		public AppNavigationPresenter(
-			IModuleViewProvider<AppNavigationView> viewProvider, 
+			IViewProvider<AppNavigationView> viewProvider, 
 			IPresenterFactory presenterFactory,
 			ICommandSubscribable router) : base(viewProvider)
 		{

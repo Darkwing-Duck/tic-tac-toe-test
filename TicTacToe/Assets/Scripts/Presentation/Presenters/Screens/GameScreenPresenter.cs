@@ -1,7 +1,7 @@
 using App.Match;
-using App.States;
 using Commands;
 using Core;
+using Presentation.Popups;
 using UnityEngine;
 using VitalRouter;
 
@@ -13,19 +13,19 @@ namespace Presentation
 		private readonly IPresenterFactory _factory;
 		private readonly IMatchService _matchService;
 		private readonly ICommandSubscribable _router;
-		private readonly IAppNavigatorService _navigator;
+		private readonly IPopupService _popupService;
 		
 		public GameScreenPresenter(
-			IModuleViewProvider<GameScreenView> viewProvider, 
+			IViewProvider<GameScreenView> viewProvider, 
 			IPresenterFactory factory,
 			ICommandSubscribable router,
 			IMatchService matchService,
-			IAppNavigatorService navigator) : base(viewProvider)
+			IPopupService popupService) : base(viewProvider)
 		{
 			_factory = factory;
 			_router = router;
 			_matchService = matchService;
-			_navigator = navigator;
+			_popupService = popupService;
 		}
 
 		protected override void InitializeView(GameScreenView view)
@@ -57,7 +57,7 @@ namespace Presentation
 		
 		public void On(GameFinishedCommand cmd)
 		{
-			_navigator.GoToState<HomeState>();
+			_popupService.Show<GameResultPopupPresenter>();
 		}
 		
 		private void AddBoardElementAt(int turnOwner, Vector2Int position)

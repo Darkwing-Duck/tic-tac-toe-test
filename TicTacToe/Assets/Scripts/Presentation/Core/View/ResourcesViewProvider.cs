@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Presentation
 {
-	public class ResourcesViewProvider<TView> : IModuleViewProvider<TView>
+	public class ResourcesViewProvider<TView> : IViewProvider<TView>
 		where TView : MonoBehaviour
 	{
 		private TView _view;

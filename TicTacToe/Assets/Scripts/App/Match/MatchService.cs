@@ -15,12 +15,26 @@ namespace App.Match
 		Cross,
 		Circle
 	}
+
+	public class MatchResult
+	{
+		public readonly int Winner;
+		public readonly Vector2Int[] WinSlots;
+
+		public MatchResult(int winner, Vector2Int[] winSlots)
+		{
+			Winner = winner;
+			WinSlots = winSlots;
+		}
+	}
 	
 	public interface IMatchService : IUpdatable
 	{
+		MatchType CurrentMatchType { get; }
 		void StartMatch(MatchType type);
 		void ActivateInput();
 		SymbolKey GetPlayerSymbol(int playerId);
+		bool TryGetResult(out MatchResult result);
 	}
 	
 	public class MatchService : IMatchService, IMatchPlayerOutput
@@ -33,7 +47,9 @@ namespace App.Match
 		private readonly IAppNavigatorService _appNavigator;
 
 		private MatchPlayerInput _activeInput;
-		
+
+		public MatchType CurrentMatchType { get; private set; }
+
 		public MatchService(GameEngine gameEngine, IAppNavigatorService appNavigator, ICommandPublisher commandPublisher)
 		{
 			_gameEngine = gameEngine;
@@ -46,6 +62,8 @@ namespace App.Match
 		{
 			var playerId1 = 1;
 			var playerId2 = 2;
+
+			CurrentMatchType = type;
 			
 			_appNavigator.GoToState<GameState>();
 			
@@ -86,6 +104,17 @@ namespace App.Match
 			} else {
 				NotifyNextTurn();
 			}
+		}
+
+		public bool TryGetResult(out MatchResult result)
+		{
+			if (!_gameEngine.TryGetGameResult(out var gameResult)) {
+				result = default;
+				return false;
+			}
+
+			result = new MatchResult(gameResult.Winner, gameResult.WinSlots);
+			return true;
 		}
 
 		private void NotifyNextTurn()

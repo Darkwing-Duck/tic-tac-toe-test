@@ -8,9 +8,13 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 238588314319636095, guid: b3ac43a8e62e844178680c5f2d21e502, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0cab6683bd3a3432d961cf15b2cba8a6, type: 3}
     - target: {fileID: 4728814480441898447, guid: b3ac43a8e62e844178680c5f2d21e502, type: 3}
       propertyPath: m_Name
-      value: P_BlueButton
+      value: P_YellowButton
       objectReference: {fileID: 0}
     - target: {fileID: 9010736447167287970, guid: b3ac43a8e62e844178680c5f2d21e502, type: 3}
       propertyPath: m_Pivot.x

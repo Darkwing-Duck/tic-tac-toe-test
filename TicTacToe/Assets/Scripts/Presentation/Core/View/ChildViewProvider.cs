@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Presentation
 {
-	public class ChildViewProvider<TView> : IModuleViewProvider<TView>
+	public class ChildViewProvider<TView> : IViewProvider<TView>
 		where TView : PresentationView
 	{
 		private TView _view;

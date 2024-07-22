@@ -1,5 +1,6 @@
 using App.States;
 using Presentation;
+using Presentation.Popups;
 using VContainer.Unity;
 
 namespace Infrastructure
@@ -19,8 +20,11 @@ namespace Infrastructure
 
 		public void Initialize()
 		{
-			var presenter = _presenterFactory.Create<AppNavigationPresenter>();
-			presenter.ShowUnder(_scope.transform);
+			var navigationPresenter = _presenterFactory.Create<AppNavigationPresenter>();
+			navigationPresenter.ShowUnder(_scope.transform);
+			
+			var popupsLayerPresenter = _presenterFactory.Create<PopupsLayerPresenter>();
+			popupsLayerPresenter.ShowUnder(_scope.transform);
 			
 			_appNavigator.GoToState<HomeState>();
 		}
