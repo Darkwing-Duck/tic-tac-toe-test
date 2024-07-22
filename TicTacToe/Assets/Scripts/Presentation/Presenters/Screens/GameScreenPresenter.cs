@@ -1,5 +1,6 @@
 using App.Match;
 using Commands;
+using Cysharp.Threading.Tasks;
 using Presentation.Popups;
 using UnityEngine;
 using Utils;
@@ -55,8 +56,11 @@ namespace Presentation
 			View.HUD.SetTurnOwner(cmd.TurnOwner);
 		}
 		
-		public void On(GameFinishedCommand _)
+		public async UniTask On(GameFinishedCommand _)
 		{
+			// add delay for openning game result popup
+			await UniTask.Delay(1000);
+			
 			_popupService.Show<GameResultPopupPresenter>();
 		}
 		
