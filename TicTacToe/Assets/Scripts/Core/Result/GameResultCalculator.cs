@@ -100,9 +100,9 @@ namespace Core
 			}
 
 			//check draw
-			// if the number of turn is 9, it means that we already made 8 moves
+			// if the number of turn is 10, it means that we already made 9 moves
 			// so, one free slot left but it doesn't matter, there are no winners
-			if (dataProvider.TurnNumber >= board.Size * board.Size){
+			if (dataProvider.TurnNumber >= board.Size * board.Size + 1){
 				return new GameResult(0, Array.Empty<Vector2Int>());
 			}
 			

@@ -17,7 +17,7 @@ namespace App.Match
 
 		protected override async void OnActivate()
 		{
-			var delay = Random.Range(100, 3000); // bot thinking time
+			var delay = Random.Range(200, 1000); // bot thinking time (ms)
 			await UniTask.Delay(TimeSpan.FromMilliseconds(delay), ignoreTimeScale: false);
 			MakeTurnAt(MakeTurnDecision());
 		}
@@ -26,8 +26,6 @@ namespace App.Match
 		{
 			var freeCells = _matchData.Board.GetFreeCells();
 			var randomIndex = Random.Range(0, freeCells.Count);
-
-			Debug.Log($"Bot Cell: {freeCells[randomIndex]}");
 
 			return freeCells[randomIndex];
 		}

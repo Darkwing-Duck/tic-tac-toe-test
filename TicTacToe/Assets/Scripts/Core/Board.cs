@@ -34,9 +34,7 @@ namespace Core
 			
 			for (var i = 0; i < _slots.Length; i++) {
 				if (IsSlotFree(i)) {
-					var cell = BoardUtils.IndexToPosition(i, Size);
 					result.Add(BoardUtils.IndexToPosition(i, Size));
-					Debug.Log($"index: {i} - cell: {cell}");
 				}
 			}
 
