@@ -13,10 +13,10 @@ The game looks pretty simple. It has 2 screens: HomeScreen and GameScreen. Home 
 </p>
 
 ### Dependencies
-*Unity 2022.3.23f1*
-*VContainer* - for resolving the dependencies in the project.
-*VitalRouter* - really fast and convenient implementation of message bus.
-*UniTask* - current implementation of VitalRouter framework requires UniTask that I don't really like but as is.
+- *Unity 2022.3.23f1*
+- *VContainer* - for resolving the dependencies in the project.
+- *VitalRouter* - really fast and convenient implementation of message bus.
+- *UniTask* - current implementation of VitalRouter framework requires UniTask that I don't really like but as is.
 
 ### How To Run
 Open a scene called Main and enter the play mode.
