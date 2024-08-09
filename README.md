@@ -1,5 +1,5 @@
 # Tic Tac Toe Game
-The idea of the project is just to demonstrate how could be done game architecture using Unity Engine.
+The idea of the project is just to demonstrate skills of designing game architecture.
 
 ### Overview
 The game looks pretty simple. It has 2 screens: HomeScreen and GameScreen. Home screen consists of 3 buttons to run the match in 3 different ways:
