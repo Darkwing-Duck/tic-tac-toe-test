@@ -3,9 +3,9 @@ The idea of the project is just to demonstrate skills of designing game architec
 
 ### Overview
 The game looks pretty simple. It has 2 screens: HomeScreen and GameScreen. Home screen consists of 3 buttons to run the match in 3 different ways:
-1. Local Player vs Local Player - 2 players are playing on the same device using the same input strategy.
-2. Local Player vs AI - you can play with a really stupid bot, but it can be easily upgraded by adding a strategy of mode smart AI player input.
-3. AI vs AI - here you can watch how 2 AI players play with each other. AI is really simple. It just finds a random free cell on the board and uses it.
+1. *Local Player vs Local Player* - 2 players are playing on the same device using the same input strategy.
+2. *Local Player vs AI* - you can play with a really stupid bot, but it can be easily upgraded by adding a strategy of mode smart AI player input.
+3. *AI vs AI* - here you can watch how 2 AI players play with each other. AI is really simple. It just finds a random free cell on the board and uses it.
 <p align="center">
   <img src="Documents/Images/menu.png" width="200" title="Main Menu">
   <img src="Documents/Images/game.png" width="200" alt="Game Screen">
